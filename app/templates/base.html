@@ -24,12 +24,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" />
     {% block extra_head %}{% endblock %}
   </head>
-  <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
+  <body class="d-flex flex-column min-vh-100 site-body has-fixed-nav {% block body_class %}{% endblock %}">
     {% include "partials/navbar.html" %}
-    <main class="flex-grow-1 py-4">
-      <div class="container app-container">{% block content %}{% endblock %}</div>
+    <main class="flex-grow-1 site-main">
+      {% block full_width_main %}
+        <div class="container app-container py-4">{% block content %}{% endblock %}</div>
+      {% endblock %}
     </main>
-    <footer class="border-top py-3 bg-white">
+    <footer class="border-top py-3 site-footer">
       <div class="container app-container"></div>
     </footer>
     <script

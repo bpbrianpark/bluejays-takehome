@@ -1,5 +1,3 @@
-"""SQLite helpers and optional HTTP cache."""
-
 from __future__ import annotations
 
 import sqlite3

@@ -1,3 +1,163 @@
 {% extends "base.html" %}
-{% block content %}
+{% block body_class %}home-page{% endblock %}
+{% block title %}Home{% endblock %}
+
+{% block full_width_main %}
+  <div class="standings-shell">
+    <div class="standings-shell-inner">
+      <h1 class="standings-shell-title">Division standings</h1>
+      {% if standings_error %}
+        <div class="alert alert-warning mb-4" role="alert">{{ standings_error }}</div>
+      {% endif %}
+
+      {% if standings_sections %}
+        <div class="standings-grid">
+          {% for section in standings_sections %}
+            <article class="standings-card">
+              <header class="standings-card__header">
+                <span class="standings-card__division">{{ section.division_name }}</span>
+                <div class="standings-card__stat-labels font-stats" aria-hidden="true">
+                  <span>W</span>
+                  <span>L</span>
+                  <span>Pct</span>
+                  <span>GB</span>
+                  <span>L10</span>
+                  <span>Diff</span>
+                </div>
+              </header>
+              <div class="standings-card__body">
+                {% for t in section.teams %}
+                  <div class="standings-card__row">
+                    <div class="standings-card__team">
+                      {% if t.logo_url %}
+                        <img src="{{ t.logo_url }}" alt="" class="standings-card__logo" width="36" height="36" loading="lazy" decoding="async" />
+                      {% endif %}
+                      {% if t.team_id %}
+                        <a href="{{ url_for('teams.team_detail', team_id=t.team_id) }}" class="standings-card__teamname">{{ t.name }}</a>
+                      {% else %}
+                        <span class="standings-card__teamname">{{ t.name }}</span>
+                      {% endif %}
+                    </div>
+                    <div class="standings-card__stats font-stats">
+                      <span>{{ t.w }}</span>
+                      <span>{{ t.l }}</span>
+                      <span>{{ t.pct }}</span>
+                      <span>{{ t.gb }}</span>
+                      <span>{{ t.l10 }}</span>
+                      <span>{{ t.diff }}</span>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% elif not standings_error %}
+        <p class="text-white-50 mb-5">No standings available.</p>
+      {% endif %}
+
+      <section class="home-news-on-navy mt-5 pt-1">
+        <h2 class="standings-shell-title standings-shell-title--sub mb-3">MLB News</h2>
+        {% if news_error %}
+          <div class="alert alert-warning" role="alert">{{ news_error }}</div>
+        {% elif news_items %}
+          <div class="news-cards-scroll d-flex flex-row flex-nowrap gap-3 pb-2">
+            {% for item in news_items %}
+              <a href="{{ item.link }}" class="text-reset text-decoration-none news-card-anchor flex-shrink-0" rel="noopener noreferrer" target="_blank">
+                <article class="news-card h-100">
+                  {% if item.image_url %}
+                    <div class="ratio ratio-16x9 overflow-hidden rounded-top bg-light">
+                      <img src="{{ item.image_url }}" alt="" class="news-card-photo w-100 h-100" loading="lazy" decoding="async" />
+                    </div>
+                  {% else %}
+                    <div class="ratio ratio-16x9 bg-light rounded-top d-flex align-items-center justify-content-center text-secondary small">No image</div>
+                  {% endif %}
+                  <div class="news-card__body">
+                    <div class="news-card-title text-dark">{{ item.title }}</div>
+                    {% if item.author %}
+                      <div class="text-secondary small mt-2">{{ item.author }}</div>
+                    {% endif %}
+                    <div class="font-stats text-muted small mt-auto pt-2">
+                      {% if item.date_display %}<span>{{ item.date_display }}</span>{% endif %}
+                      {% if item.date_display and item.time_display %}<span class="mx-1">·</span>{% endif %}
+                      {% if item.time_display %}<span>{{ item.time_display }}</span>{% endif %}
+                    </div>
+                  </div>
+                </article>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-white-50 mb-0">No news items.</p>
+        {% endif %}
+      </section>
+
+      <section class="leaders-on-navy mt-5">
+        {% if leaders_error %}
+          <div class="alert alert-warning mb-4" role="alert">{{ leaders_error }}</div>
+        {% endif %}
+
+        <header class="leaders-section-header">
+          <h2 class="leaders-section-header__title mb-0">League Leaders</h2>
+          <a href="{{ url_for('leaders.leaders') }}" class="leaders-section-header__link">
+            View All<span class="leaders-section-header__arrow" aria-hidden="true">→</span>
+          </a>
+        </header>
+
+        {% if leader_blocks %}
+          <div class="leaders-grid-4">
+            {% for block in leader_blocks %}
+              <div class="leader-feature-card">
+                <div class="leader-feature-card__category">{{ block.label }}</div>
+                {% if block.error %}
+                  <div class="leader-feature-card__player leader-feature-card__player--empty">
+                    <span class="small text-white-50">{{ block.error }}</span>
+                  </div>
+                {% elif block.rows %}
+                  {% set top = block.rows[0] %}
+                  {% if top.player_id %}
+                    <a href="{{ url_for('players.player_detail', player_id=top.player_id) }}" class="leader-feature-card__player text-decoration-none">
+                      {% if top.headshot_url %}
+                        <img src="{{ top.headshot_url }}" alt="" class="leader-feature-card__head" width="35" height="35" loading="lazy" decoding="async" />
+                      {% else %}
+                        <div class="leader-feature-card__head leader-feature-card__head--ph" aria-hidden="true"></div>
+                      {% endif %}
+                      <div class="leader-feature-card__meta">
+                        <span class="leader-feature-card__nameline">
+                          <span class="leader-feature-card__name">{{ top.player }}</span>
+                          <span class="leader-feature-card__team-inline">{{ top.team_abbr }}</span>
+                        </span>
+                      </div>
+                      <span class="leader-feature-card__stat font-stats">{{ top.value }}</span>
+                    </a>
+                  {% else %}
+                    <div class="leader-feature-card__player">
+                      {% if top.headshot_url %}
+                        <img src="{{ top.headshot_url }}" alt="" class="leader-feature-card__head" width="35" height="35" loading="lazy" decoding="async" />
+                      {% else %}
+                        <div class="leader-feature-card__head leader-feature-card__head--ph" aria-hidden="true"></div>
+                      {% endif %}
+                      <div class="leader-feature-card__meta">
+                        <span class="leader-feature-card__nameline">
+                          <span class="leader-feature-card__name">{{ top.player }}</span>
+                          <span class="leader-feature-card__team-inline">{{ top.team_abbr }}</span>
+                        </span>
+                      </div>
+                      <span class="leader-feature-card__stat font-stats">{{ top.value }}</span>
+                    </div>
+                  {% endif %}
+                {% else %}
+                  <div class="leader-feature-card__player leader-feature-card__player--empty">
+                    <span class="small text-white-50">No data.</span>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% elif not leaders_error %}
+          <p class="text-white-50 small">No leader categories configured.</p>
+        {% endif %}
+      </section>
+    </div>
+  </div>
 {% endblock %}
