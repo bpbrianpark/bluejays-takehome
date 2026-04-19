@@ -19,6 +19,10 @@ def create_app(config_object: type | None = None) -> Flask:
 
     init_extensions(app)
 
+    from app.context_processors import register_context_processors
+
+    register_context_processors(app)
+
     from app.blueprints.leaders import leaders_bp
     from app.blueprints.main import main_bp
     from app.blueprints.players import players_bp
