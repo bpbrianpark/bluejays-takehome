@@ -967,13 +967,7 @@ body.team-page {
 .stat-table__th--recent-summary,
 .stat-table__td--recent-summary {
   text-align: left;
-  max-width: 22rem;
-}
-
-.stat-table__th--placeholder,
-.stat-table__td--placeholder {
-  color: rgba(24, 58, 103, 0.35);
-  text-align: center;
+  max-width: none;
 }
 
 @media (max-width: 991.98px) {
