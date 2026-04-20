@@ -11,22 +11,50 @@ Toronto Blue Jays Developer Project
 ## Requirements
 
 - Python **3.10+** (3.11+ recommended)
+- Network access to the MLB Stats API and RSS feeds (first load may be slower while the HTTP cache warms up)
 
-## Setup
+## How to run the program
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e .
-```
+1. **Clone the repository** (or unzip it) and open a terminal in the project root (`bluejays-takehome/`).
 
-## Run
+2. **Create and activate a virtual environment**
 
-```bash
-flask --app app:create_app run --debug
-```
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
 
-Then open http://127.0.0.1:5000/
+   On Windows (PowerShell or Command Prompt):
+
+   ```text
+   .venv\Scripts\activate
+   ```
+
+3. **Install the app** (editable install from `pyproject.toml`):
+
+   ```bash
+   pip install -e .
+   ```
+
+4. **Optional — environment variables**  
+   Copy or create a `.env` file in the project root if you want to override defaults (see **Configuration** below). The app loads `.env` automatically via `python-dotenv`.
+
+5. **Start the development server**
+
+   ```bash
+   flask --app app:create_app run --debug
+   ```
+
+   Equivalent:
+
+   ```bash
+   python -m flask --app app:create_app run --debug
+   ```
+
+6. **Open the app in a browser**  
+   Visit [http://127.0.0.1:5000/](http://127.0.0.1:5000/) (Flask’s default port is **5000**).
+
+To stop the server, press `Ctrl+C` in the terminal.
 
 ## Configuration
 
@@ -38,3 +66,6 @@ Then open http://127.0.0.1:5000/
 | `HTTP_CACHE_TTL_SECONDS` | Cache TTL; use `0` to disable |
 | `MLB_NEWS_RSS_URL` | MLB.com RSS URL for landing news |
 | `LANDING_LEADER_CATEGORIES` | Comma-separated StatsAPI `leaderCategories` for the landing page |
+| `LEADERBOARD_HITTING_CATEGORIES` | Comma-separated hitting leader categories for `/leaders` |
+| `LEADERBOARD_PITCHING_CATEGORIES` | Comma-separated pitching leader categories for `/leaders` |
+| `LEADERBOARD_ROW_LIMIT` | Number of players shown per category on `/leaders` (default: `15`) |
