@@ -1,0 +1,57 @@
+{% if standings_sections %}
+  <div class="standings-grid">
+    {% for section in standings_sections %}
+      <article class="standings-card{% if extended %} standings-card--extended{% endif %}">
+        <header class="standings-card__header">
+          <span class="standings-card__division">{{ section.division_name }}</span>
+          <div class="standings-card__stat-labels font-stats" aria-hidden="true">
+            <span>W</span>
+            <span>L</span>
+            <span>Pct</span>
+            <span>GB</span>
+            <span>L10</span>
+            <span>Diff</span>
+            {% if extended %}
+              <span title="Home Win Pct">HM%</span>
+              <span title="Away Win Pct">AW%</span>
+              <span title="1 Run Game Win Pct">1R%</span>
+              <span title="Extra Inning Win Pct">EI%</span>
+            {% endif %}
+          </div>
+        </header>
+        <div class="standings-card__body">
+          {% for t in section.teams %}
+            <div class="standings-card__row">
+              <div class="standings-card__team">
+                {% if t.logo_url %}
+                  <img src="{{ t.logo_url }}" alt="" class="standings-card__logo" width="36" height="36" loading="lazy" decoding="async" />
+                {% endif %}
+                {% if t.team_id %}
+                  <a href="{{ url_for('teams.team_detail', team_id=t.team_id) }}" class="standings-card__teamname">{{ t.name }}</a>
+                {% else %}
+                  <span class="standings-card__teamname">{{ t.name }}</span>
+                {% endif %}
+              </div>
+              <div class="standings-card__stats font-stats">
+                <span>{{ t.w }}</span>
+                <span>{{ t.l }}</span>
+                <span>{{ t.pct }}</span>
+                <span>{{ t.gb }}</span>
+                <span>{{ t.l10 }}</span>
+                <span>{{ t.diff }}</span>
+                {% if extended %}
+                  <span>{{ t.home_pct }}</span>
+                  <span>{{ t.away_pct }}</span>
+                  <span>{{ t.one_run_pct }}</span>
+                  <span>{{ t.extra_inning_pct }}</span>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% elif not standings_error %}
+  <p class="text-white-50 mb-5">No standings available.</p>
+{% endif %}

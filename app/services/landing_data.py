@@ -66,6 +66,19 @@ def _format_run_differential(team_record: dict[str, Any]) -> str:
     return str(n)
 
 
+def _split_pct(team_record: dict[str, Any], split_type: str) -> str:
+    want = split_type.casefold()
+    splits = ((team_record.get("records") or {}).get("splitRecords")) or []
+    for split in splits:
+        if str(split.get("type") or "").casefold() != want:
+            continue
+        p = split.get("pct")
+        if p is not None and str(p).strip():
+            return str(p).strip()
+        return "—"
+    return "—"
+
+
 def _division_header_label(div: dict[str, Any]) -> str:
     short = div.get("nameShort")
     if short:
@@ -89,7 +102,7 @@ def load_division_headers(app: Flask) -> dict[int, str]:
     return out
 
 
-def load_standings_sections(app: Flask) -> list[dict[str, Any]]:
+def load_standings_sections(app: Flask, *, include_split_pcts: bool = False) -> list[dict[str, Any]]:
     data = fetch_json(
         "/standings",
         params={"leagueId": "103,104", "hydrate": "team"},
@@ -130,19 +143,23 @@ def load_standings_sections(app: Flask) -> list[dict[str, Any]]:
             abbr = str(team.get("abbreviation") or team.get("teamCode") or "").upper()
             if not abbr:
                 abbr = str(team.get("name") or "")[:3].upper()
-            teams_out.append(
-                {
-                    "name": abbr or str(team.get("name") or ""),
-                    "w": int(tr.get("wins") or 0),
-                    "l": int(tr.get("losses") or 0),
-                    "pct": pct if pct else "",
-                    "gb": gb if gb != "" else "—",
-                    "l10": _last_ten_record(tr),
-                    "diff": _format_run_differential(tr),
-                    "team_id": tid,
-                    "logo_url": team_logo_url(tid) if tid is not None else "",
-                }
-            )
+            row: dict[str, Any] = {
+                "name": abbr or str(team.get("name") or ""),
+                "w": int(tr.get("wins") or 0),
+                "l": int(tr.get("losses") or 0),
+                "pct": pct if pct else "",
+                "gb": gb if gb != "" else "—",
+                "l10": _last_ten_record(tr),
+                "diff": _format_run_differential(tr),
+                "team_id": tid,
+                "logo_url": team_logo_url(tid) if tid is not None else "",
+            }
+            if include_split_pcts:
+                row["home_pct"] = _split_pct(tr, "home")
+                row["away_pct"] = _split_pct(tr, "away")
+                row["one_run_pct"] = _split_pct(tr, "oneRun")
+                row["extra_inning_pct"] = _split_pct(tr, "extraInning")
+            teams_out.append(row)
 
         sections.append({"division_name": division_name, "teams": teams_out})
 

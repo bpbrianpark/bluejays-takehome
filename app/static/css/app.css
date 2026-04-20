@@ -255,6 +255,18 @@ body.has-fixed-nav {
   text-align: right;
 }
 
+.standings-card--extended .standings-card__stat-labels,
+.standings-card--extended .standings-card__stats {
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.72rem;
+}
+
+.standings-card--extended .standings-card__stat-labels span,
+.standings-card--extended .standings-card__stats span {
+  min-width: 1.85rem;
+}
+
 .news-cards-scroll {
   overflow-x: auto;
   scrollbar-width: thin;
