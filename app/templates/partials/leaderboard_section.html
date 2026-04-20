@@ -1,0 +1,56 @@
+<section class="leaders-on-navy leaders-page-section mt-5 pt-1">
+  <h2 class="standings-shell-title standings-shell-title--sub mb-3">{{ section_title }}</h2>
+  {% if blocks %}
+    <div class="leaders-grid-4">
+      {% for block in blocks %}
+        <article class="leader-feature-card leader-feature-card--ranked">
+          <div class="leader-feature-card__category">{{ block.label }}</div>
+          {% if block.error %}
+            <div class="leader-feature-card__ranked-alert text-danger small px-3 py-2 bg-white" role="alert">{{ block.error }}</div>
+          {% elif block.rows %}
+            <div class="leader-feature-card__ranked-body">
+              {% for row in block.rows %}
+                {% if row.player_id %}
+                  <a
+                    href="{{ url_for('players.player_detail', player_id=row.player_id) }}"
+                    class="leader-rank-row text-decoration-none"
+                  >
+                    <span class="leader-rank-row__rank font-stats">{{ row.rank }}</span>
+                    {% if row.headshot_url %}
+                      <img src="{{ row.headshot_url }}" alt="" class="leader-rank-row__head" width="28" height="28" loading="lazy" decoding="async" />
+                    {% else %}
+                      <span class="leader-rank-row__head leader-rank-row__head--ph" aria-hidden="true"></span>
+                    {% endif %}
+                    <span class="leader-rank-row__meta">
+                      <span class="leader-rank-row__nameline">
+                        <span class="leader-rank-row__name">{{ row.player }}</span>
+                        <span class="leader-rank-row__team font-stats">{{ row.team_abbr }}</span>
+                      </span>
+                    </span>
+                    <span class="leader-rank-row__value font-stats">{{ row.value }}</span>
+                  </a>
+                {% else %}
+                  <div class="leader-rank-row leader-rank-row--static">
+                    <span class="leader-rank-row__rank font-stats">{{ row.rank }}</span>
+                    <span class="leader-rank-row__head leader-rank-row__head--ph" aria-hidden="true"></span>
+                    <span class="leader-rank-row__meta">
+                      <span class="leader-rank-row__nameline">
+                        <span class="leader-rank-row__name">{{ row.player }}</span>
+                        <span class="leader-rank-row__team font-stats">{{ row.team_abbr }}</span>
+                      </span>
+                    </span>
+                    <span class="leader-rank-row__value font-stats">{{ row.value }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="leader-feature-card__ranked-empty small px-3 py-2">No data for this category.</div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-white-50 small mb-0">No categories configured.</p>
+  {% endif %}
+</section>

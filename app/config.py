@@ -27,3 +27,25 @@ class Config:
         ).split(",")
         if c.strip()
     )
+
+    _board_hit_default = "homeRuns,runs,rbi,onBasePlusSlugging"
+    LEADERBOARD_HITTING_CATEGORIES = tuple(
+        c.strip()
+        for c in os.environ.get(
+            "LEADERBOARD_HITTING_CATEGORIES",
+            _board_hit_default,
+        ).split(",")
+        if c.strip()
+    )
+
+    _board_pit_default = "strikeouts,earnedRunAverage,wins,saves"
+    LEADERBOARD_PITCHING_CATEGORIES = tuple(
+        c.strip()
+        for c in os.environ.get(
+            "LEADERBOARD_PITCHING_CATEGORIES",
+            _board_pit_default,
+        ).split(",")
+        if c.strip()
+    )
+
+    LEADERBOARD_ROW_LIMIT = int(os.environ.get("LEADERBOARD_ROW_LIMIT", "15"))

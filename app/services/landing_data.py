@@ -12,16 +12,32 @@ logger = logging.getLogger(__name__)
 
 _LEADER_STAT_GROUP: dict[str, str] = {
     "homeRuns": "hitting",
+    "runs": "hitting",
+    "rbi": "hitting",
+    "hits": "hitting",
+    "battingAverage": "hitting",
     "onBasePlusSlugging": "hitting",
+    "stolenBases": "hitting",
     "strikeouts": "pitching",
     "earnedRunAverage": "pitching",
+    "wins": "pitching",
+    "saves": "pitching",
+    "whip": "pitching",
 }
 
 _LEADER_LABELS: dict[str, str] = {
     "homeRuns": "Home Runs",
+    "runs": "Runs",
+    "rbi": "RBI",
+    "hits": "Hits",
+    "battingAverage": "AVG",
     "onBasePlusSlugging": "OPS",
+    "stolenBases": "Stolen Bases",
     "strikeouts": "Strikeouts",
     "earnedRunAverage": "ERA",
+    "wins": "Wins",
+    "saves": "Saves",
+    "whip": "WHIP",
 }
 
 
@@ -166,6 +182,18 @@ def load_standings_sections(app: Flask, *, include_split_pcts: bool = False) -> 
     return sections
 
 
+def _person_last_first(person: dict[str, Any]) -> str:
+    """Display name as Last, First (matches player profile hero)."""
+    lf = str(person.get("lastFirstName") or "").strip()
+    if lf:
+        return lf
+    last = str(person.get("lastName") or "").strip()
+    first = str(person.get("firstName") or "").strip()
+    if last and first:
+        return f"{last}, {first}"
+    return str(person.get("fullName") or "").strip()
+
+
 def _pick_leader_block(
     league_leaders: list[dict[str, Any]],
     *,
@@ -223,7 +251,7 @@ def load_leader_category(
             rows.append(
                 {
                     "rank": entry.get("rank"),
-                    "player": str(person.get("fullName") or ""),
+                    "player": _person_last_first(person),
                     "team": str(team.get("name") or ""),
                     "team_abbr": abbr or "—",
                     "value": str(entry.get("value") or ""),
@@ -253,3 +281,30 @@ def load_all_leader_categories(
     for cat in cats:
         out.append(load_leader_category(app, cat, season=season, limit=leader_limit))
     return out
+
+
+def load_leaderboard_page(
+    app: Flask,
+    *,
+    season: int | None = None,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    """Load hitting and pitching leader blocks for the full leaderboards page."""
+    season_val = season if season is not None else default_stats_season()
+    row_limit = limit if limit is not None else int(app.config.get("LEADERBOARD_ROW_LIMIT") or 15)
+    hitting_cats: tuple[str, ...] = tuple(app.config["LEADERBOARD_HITTING_CATEGORIES"])
+    pitching_cats: tuple[str, ...] = tuple(app.config["LEADERBOARD_PITCHING_CATEGORIES"])
+
+    hitting_blocks = [
+        load_leader_category(app, cat, season=season_val, limit=row_limit) for cat in hitting_cats
+    ]
+    pitching_blocks = [
+        load_leader_category(app, cat, season=season_val, limit=row_limit) for cat in pitching_cats
+    ]
+
+    return {
+        "season_val": season_val,
+        "hitting_blocks": hitting_blocks,
+        "pitching_blocks": pitching_blocks,
+        "row_limit": row_limit,
+    }
