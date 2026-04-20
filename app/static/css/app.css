@@ -705,7 +705,7 @@ body.team-page {
 }
 
 .stat-table__th--stat {
-  text-align: right;
+  text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
@@ -726,7 +726,7 @@ body.team-page {
 }
 
 .stat-table__td--stat {
-  text-align: right;
+  text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
