@@ -446,3 +446,237 @@ body.has-fixed-nav {
   font-size: 0.85rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
+
+.font-stat-condensed {
+  font-family: "Inter";
+}
+
+body.team-page {
+  font-size: 15px;
+}
+
+.team-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.team-page-header__left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.team-page-header__logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.team-page-header__name {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.team-page-header__sub {
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0.45rem 0 0;
+  font-size: 1.1rem;
+  line-height: 1.45;
+}
+
+.team-page-header__dot {
+  margin: 0 0.4rem;
+}
+
+.team-page-header__gb-wrap {
+  margin-inline-start: 0.35rem;
+  white-space: nowrap;
+}
+
+.team-page-header__sub--muted {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.gb-pill {
+  display: inline-block;
+  background: #fff;
+  color: var(--color-page-bg);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.team-page-season {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1rem;
+}
+
+.team-page .standings-shell-title {
+  font-size: 1.35rem;
+}
+
+.team-page .news-card-title {
+  font-size: 1rem;
+}
+
+.team-page .stat-card__banner {
+  font-size: 1rem;
+}
+
+.team-page .stat-table {
+  font-size: 0.85rem;
+}
+
+.team-page .stat-table__player-name {
+  font-size: 0.95rem;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  margin-bottom: 1.5rem;
+}
+
+.stat-card__banner {
+  background: var(--color-header-blue);
+  color: #fff;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.stat-card__table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stat-table {
+  --col-pos: 1.85rem;
+  --col-num: 1.85rem;
+  --col-player: 9rem;
+  width: max(100%, 72rem);
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.78rem;
+}
+
+.stat-table thead tr {
+  background: var(--color-header-blue);
+}
+
+.stat-table__th {
+  padding: 6px 4px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-table__th--stat {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-table__td {
+  padding: 5px 4px;
+  border-bottom: 1px solid #e8ecf1;
+  vertical-align: middle;
+}
+
+.stat-table__row:nth-child(even) .stat-table__td {
+  background: #fafbfd;
+}
+
+.stat-table__td--pos,
+.stat-table__td--num {
+  color: var(--color-header-blue);
+  font-weight: 600;
+}
+
+.stat-table__td--stat {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-table__player {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.stat-table__headshot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.stat-table__player-name {
+  color: #111;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  line-height: 1.25;
+}
+
+.stat-table__player-name:hover {
+  color: var(--color-header-blue);
+  text-decoration: underline;
+}
+
+.stat-table__th--sticky.stat-table__th--pos,
+.stat-table__td--sticky.stat-table__td--pos {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: var(--col-pos);
+  box-shadow: 1px 0 0 rgba(24, 58, 103, 0.08);
+}
+
+.stat-table__th--sticky.stat-table__th--num,
+.stat-table__td--sticky.stat-table__td--num {
+  position: sticky;
+  left: var(--col-pos);
+  z-index: 2;
+  min-width: var(--col-num);
+  box-shadow: 1px 0 0 rgba(24, 58, 103, 0.08);
+}
+
+.stat-table__th--sticky.stat-table__th--player,
+.stat-table__td--sticky.stat-table__td--player {
+  position: sticky;
+  left: calc(var(--col-pos) + var(--col-num));
+  z-index: 2;
+  min-width: var(--col-player);
+  box-shadow: 4px 0 8px -2px rgba(24, 58, 103, 0.12);
+}
+
+.stat-table thead .stat-table__th--sticky {
+  z-index: 4;
+  background: var(--color-header-blue);
+}
+
+.stat-table tbody .stat-table__td--sticky {
+  background: #fff;
+}
+
+.stat-table tbody .stat-table__row:nth-child(even) .stat-table__td--sticky {
+  background: #fafbfd;
+}

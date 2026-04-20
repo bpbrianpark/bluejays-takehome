@@ -1,0 +1,34 @@
+<article class="stat-card">
+  <header class="stat-card__banner">{{ title }}</header>
+  <div class="stat-card__table-wrap">
+    <table class="stat-table font-stat-condensed">
+      <thead>
+        <tr>
+          <th class="stat-table__th stat-table__th--sticky stat-table__th--pos" scope="col">Pos</th>
+          <th class="stat-table__th stat-table__th--sticky stat-table__th--num" scope="col">#</th>
+          <th class="stat-table__th stat-table__th--sticky stat-table__th--player" scope="col">{{ player_label }}</th>
+          {% for c in stat_columns %}
+            <th class="stat-table__th stat-table__th--stat" scope="col">{{ c.label }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+          <tr class="stat-table__row">
+            <td class="stat-table__td stat-table__td--sticky stat-table__td--pos">{{ row.pos }}</td>
+            <td class="stat-table__td stat-table__td--sticky stat-table__td--num">{{ row.jersey }}</td>
+            <td class="stat-table__td stat-table__td--sticky stat-table__td--player">
+              <div class="stat-table__player">
+                <img src="{{ row.headshot_url }}" alt="" class="stat-table__headshot" width="36" height="36" loading="lazy" decoding="async" />
+                <a href="{{ url_for('players.player_detail', player_id=row.player_id) }}" class="stat-table__player-name">{{ row.player_name }}</a>
+              </div>
+            </td>
+            {% for c in stat_columns %}
+              <td class="stat-table__td stat-table__td--stat">{{ row[c.key] }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</article>
