@@ -1,3 +1,170 @@
 {% extends "base.html" %}
-{% block content %}
+{% block body_class %}home-page team-page{% endblock %}
+{% block title %}{{ team.name }}{% endblock %}
+
+{% block extra_head %}
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+{% endblock %}
+
+{% block full_width_main %}
+  <div class="standings-shell">
+    <div class="standings-shell-inner">
+      <header class="team-page-header">
+        <div class="team-page-header__left">
+          {% if team.logo_url %}
+            <img src="{{ team.logo_url }}" alt="" class="team-page-header__logo" width="80" height="80" loading="lazy" decoding="async" />
+          {% endif %}
+          <div class="team-page-header__titles">
+            <h1 class="team-page-header__name">{{ team.name }}</h1>
+            {% if standings %}
+              <p class="team-page-header__sub">
+                {% if standings.rank_in_division %}
+                  <span>{{ standings.rank_in_division }}</span>
+                  <span class="team-page-header__dot">·</span>
+                {% endif %}
+                <span>{{ standings.w }}-{{ standings.l }}</span>
+                {% if standings.pct %}
+                  <span> ({{ standings.pct }})</span>
+                {% endif %}
+                <span class="team-page-header__gb-wrap">
+                  <span class="gb-pill font-stats">GB {{ standings.games_back_display }}</span>
+                </span>
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </header>
+
+      {% if standings_error %}
+        <div class="alert alert-warning py-2 mb-3" role="alert">{{ standings_error }}</div>
+      {% endif %}
+
+      <p class="team-page-season mb-4">{{ season_val }} season statistics</p>
+
+      {% if stats_error %}
+        <div class="alert alert-warning mb-3" role="alert">{{ stats_error }}</div>
+      {% endif %}
+
+      {% if batting_rows %}
+        {% set title = "Hitters" %}
+        {% set player_label = "Batter" %}
+        {% set stat_columns = batting_stat_columns %}
+        {% set rows = batting_rows %}
+        {% include "partials/stat_table_card.html" %}
+      {% elif not stats_error %}
+        <p class="text-white-50 mb-4">No hitting data available.</p>
+      {% endif %}
+
+      {% if pitching_rows %}
+        {% set title = "Pitchers" %}
+        {% set player_label = "Pitcher" %}
+        {% set stat_columns = pitching_stat_columns %}
+        {% set rows = pitching_rows %}
+        {% include "partials/stat_table_card.html" %}
+      {% elif not stats_error %}
+        <p class="text-white-50 mb-4">No pitching data available.</p>
+      {% endif %}
+
+      <section class="home-news-on-navy mt-5 pt-1">
+        <h2 class="standings-shell-title standings-shell-title--sub mb-3">
+          {% if team.abbr %}{{ team.abbr }} news{% else %}Team news{% endif %}
+        </h2>
+        {% if news_error %}
+          <div class="alert alert-warning" role="alert">{{ news_error }}</div>
+        {% elif news_items %}
+          <div class="news-cards-scroll d-flex flex-row flex-nowrap gap-3 pb-2">
+            {% for item in news_items %}
+              <a href="{{ item.link }}" class="text-reset text-decoration-none news-card-anchor flex-shrink-0" rel="noopener noreferrer" target="_blank">
+                <article class="news-card h-100">
+                  {% if item.image_url %}
+                    <div class="ratio ratio-16x9 overflow-hidden rounded-top bg-light">
+                      <img src="{{ item.image_url }}" alt="" class="news-card-photo w-100 h-100" loading="lazy" decoding="async" />
+                    </div>
+                  {% else %}
+                    <div class="ratio ratio-16x9 bg-light rounded-top d-flex align-items-center justify-content-center text-secondary">No image</div>
+                  {% endif %}
+                  <div class="news-card__body">
+                    <div class="news-card-title text-dark">{{ item.title }}</div>
+                    {% if item.author %}
+                      <div class="text-secondary mt-2">{{ item.author }}</div>
+                    {% endif %}
+                    <div class="font-stats text-muted mt-auto pt-2">
+                      {% if item.date_display %}<span>{{ item.date_display }}</span>{% endif %}
+                      {% if item.date_display and item.time_display %}<span class="mx-1">·</span>{% endif %}
+                      {% if item.time_display %}<span>{{ item.time_display }}</span>{% endif %}
+                    </div>
+                  </div>
+                </article>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-white-50 mb-0">No news items.</p>
+        {% endif %}
+      </section>
+
+      <section class="leaders-on-navy mt-5 pt-1">
+        <header class="leaders-section-header">
+          <h2 class="leaders-section-header__title mb-0">Team Leaders</h2>
+        </header>
+
+        {% if team_leader_blocks %}
+          <div class="leaders-grid-4">
+            {% for block in team_leader_blocks %}
+              <div class="leader-feature-card">
+                <div class="leader-feature-card__category">{{ block.label }}</div>
+                {% if block.error %}
+                  <div class="leader-feature-card__player leader-feature-card__player--empty">
+                    <span class="small text-white-50">{{ block.error }}</span>
+                  </div>
+                {% elif block.rows %}
+                  {% set top = block.rows[0] %}
+                  {% if top.player_id %}
+                    <a href="{{ url_for('players.player_detail', player_id=top.player_id) }}" class="leader-feature-card__player text-decoration-none">
+                      {% if top.headshot_url %}
+                        <img src="{{ top.headshot_url }}" alt="" class="leader-feature-card__head" width="35" height="35" loading="lazy" decoding="async" />
+                      {% else %}
+                        <div class="leader-feature-card__head leader-feature-card__head--ph" aria-hidden="true"></div>
+                      {% endif %}
+                      <div class="leader-feature-card__meta">
+                        <span class="leader-feature-card__nameline">
+                          <span class="leader-feature-card__name">{{ top.player }}</span>
+                          <span class="leader-feature-card__team-inline">{{ top.team_abbr }}</span>
+                        </span>
+                      </div>
+                      <span class="leader-feature-card__stat font-stats">{{ top.value }}</span>
+                    </a>
+                  {% else %}
+                    <div class="leader-feature-card__player">
+                      {% if top.headshot_url %}
+                        <img src="{{ top.headshot_url }}" alt="" class="leader-feature-card__head" width="35" height="35" loading="lazy" decoding="async" />
+                      {% else %}
+                        <div class="leader-feature-card__head leader-feature-card__head--ph" aria-hidden="true"></div>
+                      {% endif %}
+                      <div class="leader-feature-card__meta">
+                        <span class="leader-feature-card__nameline">
+                          <span class="leader-feature-card__name">{{ top.player }}</span>
+                          <span class="leader-feature-card__team-inline">{{ top.team_abbr }}</span>
+                        </span>
+                      </div>
+                      <span class="leader-feature-card__stat font-stats">{{ top.value }}</span>
+                    </div>
+                  {% endif %}
+                {% else %}
+                  <div class="leader-feature-card__player leader-feature-card__player--empty">
+                    <span class="small text-white-50">No data.</span>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% elif not stats_error %}
+          <p class="text-white-50 small mb-0">No team leader data.</p>
+        {% endif %}
+      </section>
+    </div>
+  </div>
 {% endblock %}
