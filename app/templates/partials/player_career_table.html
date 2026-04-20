@@ -1,0 +1,42 @@
+<article class="stat-card player-career-card">
+  <header class="stat-card__banner">{{ career_block.title }}</header>
+  <div class="stat-card__table-wrap">
+    <table class="stat-table stat-table--player-career font-stat-condensed">
+      <thead>
+        <tr>
+          {% for c in career_block.columns %}
+            {% if c.key in ('year', 'team_abbr') %}
+              <th class="stat-table__th stat-table__th--player-career-fixed" scope="col">{{ c.label }}</th>
+            {% else %}
+              <th class="stat-table__th stat-table__th--stat" scope="col">{{ c.label }}</th>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in career_block.rows %}
+          <tr class="stat-table__row{% if row.kind == 'projection' %} stat-table__row--projection{% elif row.kind == 'career' %} stat-table__row--career-totals{% endif %}">
+            {% for c in career_block.columns %}
+              {% if c.key == 'year' %}
+                <td class="stat-table__td stat-table__td--player-career-fixed">{{ row.year }}</td>
+              {% elif c.key == 'team_abbr' %}
+                <td class="stat-table__td stat-table__td--player-career-fixed stat-table__td--team-cell">
+                  {% if row.team_id %}
+                    <span class="player-career-team">
+                      <img src="{{ team_logo_url(row.team_id) }}" alt="" class="player-career-team__logo" width="28" height="28" loading="lazy" decoding="async" />
+                      <span>{{ row.team_abbr }}</span>
+                    </span>
+                  {% else %}
+                    {{ row.team_abbr }}
+                  {% endif %}
+                </td>
+              {% else %}
+                <td class="stat-table__td stat-table__td--stat">{{ row[c.key] }}</td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</article>
